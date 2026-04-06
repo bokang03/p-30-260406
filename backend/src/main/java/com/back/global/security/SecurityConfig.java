@@ -32,7 +32,6 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/v1/members/login", "/api/v1/members/join").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/members/logout").permitAll()
                         .requestMatchers("/api/v1/adm/**").hasRole("ADMIN")
-                        .requestMatchers("/api/*/**").authenticated()
                         .anyRequest().authenticated())
                 .csrf(( csrf) -> csrf.disable())
                 .headers((headers) -> headers
@@ -42,7 +41,8 @@ public class SecurityConfig {
                 .exceptionHandling(
                         exceptionHandling -> exceptionHandling
                                 .authenticationEntryPoint((request, response, authenticationException) -> {
-                                    response.setContentType("application/json");
+
+                                    response.setContentType("application/json; charset=UTF-8");
                                     response.setStatus(401);
                                     response.getWriter().write(
                                             """
@@ -53,7 +53,7 @@ public class SecurityConfig {
                                                     """);
                                 })
                                 .accessDeniedHandler((request, response, accessDeniedException) -> {
-                                            response.setContentType("application/json");
+                                            response.setContentType("application/json; charset=UTF-8");
                                             response.setStatus(403);
                                             response.getWriter().write(
                                                     """
@@ -84,5 +84,4 @@ public class SecurityConfig {
 
         return source;
     }
-
 }
