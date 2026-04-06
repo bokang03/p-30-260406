@@ -14,10 +14,8 @@ function useAuth() {
         fetchApi("/api/v1/members/me")
             .then((memberDto) => {
                 setLoginMember(memberDto);
-                callbacks.onSuccess?.(memberDto);
             })
             .catch((err) => {
-                callbacks.onError?.(err);
             });
     }
 
@@ -27,49 +25,11 @@ function useAuth() {
                 method: "DELETE",
             })
                 .then((data) => {
-                    setLoginMember(null);
                     alert(data.msg);
-                    callbacks.onSuccess?.(data);
                 })
                 .catch((rsData) => {
                     alert(rsData.msg);
-                    callbacks.onError?.(rsData.msg);
                 });
-    };
-
-    return { loginMember, getLoginMember, logout };
-}
-
-export default function ClientLayout({ children }: {
-    children: React.ReactNode;
-}) {
-
-    const authState = useAuth();
-    const { loginMember, getLoginMember, logout: _logout } = useAuth();
-    const isLogin = loginMember !== null;
-    const router = useRouter();
-
-    useEffect(() => {
-        getLoginMember({
-            onSuccess: (data) => {
-                console.log("data", data);
-            },
-            onError: (err) => {
-                console.log("err", err);
-            },
-        });
-    }, []);
-
-    const logout = () => {
-        _logout({
-            onSuccess: (data) => {
-                alert(data.msg);
-                router.replace("/");
-            },
-            onError: (rsData) => {
-                alert(rsData.msg);
-            },
-        });
     };
 
     return (
